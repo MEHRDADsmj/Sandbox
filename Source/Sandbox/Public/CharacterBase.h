@@ -23,7 +23,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -31,9 +31,18 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	// FUNCTIONS
+public:
+	UFUNCTION(Category= "Input")
+	void MoveForward(float InVal);
+
+	UFUNCTION(Category= "Input")
+	void MoveRight(float InVal);
 
 	// PROPERTIES
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
+	FRotator RotRate = FRotator{0.0f, 720.0f, 0.0f};
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Components")
 	USpringArmComponent* CameraSpringArm;
 
