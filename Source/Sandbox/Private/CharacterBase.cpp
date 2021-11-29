@@ -2,6 +2,8 @@
 
 
 #include "CharacterBase.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
@@ -11,6 +13,11 @@ ACharacterBase::ACharacterBase()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraSpringArm->SetupAttachment(RootComponent);
+
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(CameraSpringArm);
 }
 
 // Called when the game starts or when spawned

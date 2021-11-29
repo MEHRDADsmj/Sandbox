@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "CharacterBase.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+
 UCLASS()
 class SANDBOX_API ACharacterBase : public ACharacter
 {
@@ -30,4 +33,10 @@ public:
 	// FUNCTIONS
 
 	// PROPERTIES
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Components")
+	USpringArmComponent* CameraSpringArm;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Components")
+	UCameraComponent* Camera;
 };
