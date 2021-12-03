@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/SphereComponent.h"
 #include "CharacterBase.generated.h"
 
 class USpringArmComponent;
@@ -30,6 +31,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// Equivalent of ConstructionScript in blueprint
+	virtual void OnConstruction(const FTransform& Transform) override;
+
 	// FUNCTIONS
 public:
 	UFUNCTION(Category= "Input")
@@ -38,8 +42,19 @@ public:
 	UFUNCTION(Category= "Input")
 	void MoveRight(float InVal);
 
+	UFUNCTION(Category= "Input")
+	void TargetLock();
+
 	// PROPERTIES
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
+	float TargetDetectionRange = 1000.0f;
+
+	bool IsLocked = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
+	TSubclassOf<AActor> TargetClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
 	FRotator RotRate = FRotator{0.0f, 720.0f, 0.0f};
 
@@ -48,4 +63,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Components")
 	UCameraComponent* Camera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Components")
+	USphereComponent* TargetDetector;
 };

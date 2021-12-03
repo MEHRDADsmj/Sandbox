@@ -9,7 +9,7 @@
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
 // Sets default values
-ACharacterBase::ACharacterBase()
+ACharacterBase::ACharacterBase() : TargetClass{nullptr}, CameraSpringArm{nullptr}, Camera{nullptr}, TargetDetector{nullptr}
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -22,12 +22,14 @@ ACharacterBase::ACharacterBase()
 	Camera->SetupAttachment(CameraSpringArm);
 	Camera->bUsePawnControlRotation = false;
 
+	TargetDetector = CreateDefaultSubobject<USphereComponent>(TEXT("TargetSphere"));
+	TargetDetector->SetupAttachment(RootComponent);
+
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = RotRate;
 }
 
 // Called when the game starts or when spawned
@@ -53,7 +55,16 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis("LookUp", this, &ACharacterBase::AddControllerPitchInput);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacterBase::Jump);
+	PlayerInputComponent->BindAction("TargetLock", IE_Pressed, this, &ACharacterBase::TargetLock);
 }
+
+void ACharacterBase::OnConstruction(const FTransform& Transform)
+{
+	TargetDetector->SetSphereRadius(TargetDetectionRange);
+	GetCharacterMovement()->RotationRate = RotRate;
+}
+
+// FUNCTIONS
 
 void ACharacterBase::MoveForward(float InVal)
 {
@@ -77,4 +88,8 @@ void ACharacterBase::MoveRight(float InVal)
 
 		AddMovementInput(Direction, InVal);
 	}
+}
+
+void ACharacterBase::TargetLock()
+{
 }
