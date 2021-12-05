@@ -50,6 +50,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
 	float TargetDetectionRange = 1000.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
 	bool IsLocked = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
