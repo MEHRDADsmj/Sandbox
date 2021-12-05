@@ -9,7 +9,7 @@
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
 // Sets default values
-ACharacterBase::ACharacterBase() : TargetClass{nullptr}, CameraSpringArm{nullptr}, Camera{nullptr}, TargetDetector{nullptr}
+ACharacterBase::ACharacterBase() : TargetClass{nullptr}, Target{nullptr}, CameraSpringArm{nullptr}, Camera{nullptr}, TargetDetector{nullptr}
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -42,6 +42,13 @@ void ACharacterBase::BeginPlay()
 void ACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (IsLocked)
+	{
+		const FVector TargetLocation = Target->GetActorLocation();
+		const FRotator Direction = (TargetLocation - this->GetActorLocation()).ToOrientationRotator();
+		Controller->SetControlRotation(Direction);
+	}
 }
 
 // Called to bind functionality to input
@@ -70,9 +77,9 @@ void ACharacterBase::MoveForward(float InVal)
 {
 	if (Controller && InVal != 0.0f)
 	{
-		FRotator ControlRotation = Controller->GetControlRotation();
-		FRotator Yaw = FRotator{0.0f, ControlRotation.Yaw, 0.0f};
-		FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
+		const FRotator ControlRotation = Controller->GetControlRotation();
+		const FRotator Yaw = FRotator{0.0f, ControlRotation.Yaw, 0.0f};
+		const FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
 
 		AddMovementInput(Direction, InVal);
 	}
@@ -82,9 +89,9 @@ void ACharacterBase::MoveRight(float InVal)
 {
 	if (Controller && InVal != 0.0f)
 	{
-		FRotator ControlRotation = Controller->GetControlRotation();
-		FRotator Yaw = FRotator{0.0f, ControlRotation.Yaw, 0.0f};
-		FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::Y);
+		const FRotator ControlRotation = Controller->GetControlRotation();
+		const FRotator Yaw = FRotator{0.0f, ControlRotation.Yaw, 0.0f};
+		const FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::Y);
 
 		AddMovementInput(Direction, InVal);
 	}
@@ -92,4 +99,24 @@ void ACharacterBase::MoveRight(float InVal)
 
 void ACharacterBase::TargetLock()
 {
+	if (IsLocked)
+	{
+		Target = nullptr;
+		IsLocked = false;
+		return;
+	}
+
+	if (TargetClass)
+	{
+		TArray<AActor*> ActorsInRange;
+		TargetDetector->GetOverlappingActors(ActorsInRange, TargetClass);
+
+		for (uint8 Index = 0; Index < ActorsInRange.Num(); Index++)
+			if (ActorsInRange[Index] != this && ActorsInRange[Index]->ActorHasTag(FName("PossibleTarget")))
+			{
+				Target = ActorsInRange[Index];
+				IsLocked = true;
+				break;
+			}
+	}
 }

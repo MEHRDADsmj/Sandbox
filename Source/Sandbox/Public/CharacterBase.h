@@ -55,6 +55,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
 	TSubclassOf<AActor> TargetClass;
 
+	UPROPERTY()
+	AActor* Target;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
 	FRotator RotRate = FRotator{0.0f, 720.0f, 0.0f};
 
