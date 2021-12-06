@@ -40,6 +40,6 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 void UHealthComponent::TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
 	Health -= Damage;
-	if (Health < 0.0f)
+	if (Health <= 0.0f)
 		GetOwner()->Destroy();
 }

@@ -153,9 +153,10 @@ void ACharacterBase::DoLightDamage()
 {
 	TArray<AActor*> Actors;
 	LeftPunch->GetOverlappingActors(Actors);
-	const TSubclassOf<UDamageType> DamageType;
-	if (Actors[0])
-		UGameplayStatics::ApplyDamage(Actors[0], LightDamage, GetController(), this, DamageType);
+	const TSubclassOf<UDamageType> DamageType;	
+	UE_LOG(LogTemp, Warning, TEXT("%d"), Actors.Num());
+	if (Actors.Num() > 1 && Actors[1] && Actors[1] != this)
+		UGameplayStatics::ApplyDamage(Actors[1], LightDamage, GetController(), this, DamageType);
 }
 
 void ACharacterBase::DoHeavyDamage()
@@ -163,6 +164,6 @@ void ACharacterBase::DoHeavyDamage()
 	TArray<AActor*> Actors;
 	RightFoot->GetOverlappingActors(Actors);
 	const TSubclassOf<UDamageType> DamageType;
-	if (Actors[0] && Actors[0] != this)
-		UGameplayStatics::ApplyDamage(Actors[0], LightDamage * 3, GetController(), this, DamageType);
+	if (Actors.Num() > 1 && Actors[1] && Actors[1] != this)
+		UGameplayStatics::ApplyDamage(Actors[1], LightDamage * 3, GetController(), this, DamageType);
 }
