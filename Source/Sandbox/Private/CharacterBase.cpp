@@ -44,11 +44,19 @@ void ACharacterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	if (IsLocked)
-	{
-		const FVector TargetLocation = Target->GetActorLocation();
-		const FRotator Direction = (TargetLocation - this->GetActorLocation()).ToOrientationRotator();
-		Controller->SetControlRotation(Direction);
-	}
+		if (Target)
+		{
+			if ((Target->GetActorLocation() - GetActorLocation()).Size() > TargetDetectionRange)
+			{
+				TargetLock();
+			}
+			else
+			{
+				const FVector TargetLocation = Target->GetActorLocation();
+				const FRotator Direction = (TargetLocation - this->GetActorLocation()).ToOrientationRotator();
+				Controller->SetControlRotation(Direction);
+			}
+		}
 }
 
 // Called to bind functionality to input
@@ -103,6 +111,8 @@ void ACharacterBase::TargetLock()
 	{
 		Target = nullptr;
 		IsLocked = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		bUseControllerRotationYaw = false;
 		return;
 	}
 
@@ -116,6 +126,8 @@ void ACharacterBase::TargetLock()
 			{
 				Target = ActorsInRange[Index];
 				IsLocked = true;
+				GetCharacterMovement()->bOrientRotationToMovement = false;
+				bUseControllerRotationYaw = true;
 				break;
 			}
 	}
