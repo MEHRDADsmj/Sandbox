@@ -45,14 +45,32 @@ public:
 	UFUNCTION(BlueprintCallable, Category= "Input")
 	void TargetLock();
 
+	UFUNCTION(BlueprintImplementableEvent, Category= "Functions")
+    void LightAttack();
+
+	UFUNCTION(BlueprintImplementableEvent, Category= "Functions")
+    void HeavyAttack();
+	
+	UFUNCTION(BlueprintCallable, Category= "Functions")
+	void DoLightDamage();
+
+	UFUNCTION(BlueprintCallable, Category= "Functions")
+    void DoHeavyDamage();
+
 	// PROPERTIES
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
 	bool IsLocked = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
+	bool IsAttacking = false;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
 	float TargetDetectionRange = 1000.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
+	float LightDamage = 100.0f;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
 	TSubclassOf<AActor> TargetClass;
 
@@ -70,4 +88,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Components")
 	USphereComponent* TargetDetector;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Components")
+	USphereComponent* LeftPunch;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Components")
+	USphereComponent* RightFoot;
 };

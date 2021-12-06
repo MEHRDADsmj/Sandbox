@@ -6,11 +6,12 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
 // Sets default values
-ACharacterBase::ACharacterBase() : TargetClass{nullptr}, Target{nullptr}, CameraSpringArm{nullptr}, Camera{nullptr}, TargetDetector{nullptr}
+ACharacterBase::ACharacterBase() : TargetClass{nullptr}, Target{nullptr}, CameraSpringArm{nullptr}, Camera{nullptr}, TargetDetector{nullptr}, LeftPunch{nullptr}, RightFoot{nullptr}
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -26,6 +27,12 @@ ACharacterBase::ACharacterBase() : TargetClass{nullptr}, Target{nullptr}, Camera
 	TargetDetector = CreateDefaultSubobject<USphereComponent>(TEXT("TargetSphere"));
 	TargetDetector->SetupAttachment(RootComponent);
 
+	LeftPunch = CreateDefaultSubobject<USphereComponent>(TEXT("LeftPunch"));
+	LeftPunch->SetupAttachment(GetMesh());
+
+	RightFoot = CreateDefaultSubobject<USphereComponent>(TEXT("RightFoot"));
+	RightFoot->SetupAttachment(GetMesh());
+	
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
@@ -72,12 +79,17 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacterBase::Jump);
 	PlayerInputComponent->BindAction("TargetLock", IE_Pressed, this, &ACharacterBase::TargetLock);
+	PlayerInputComponent->BindAction("LightAttack", IE_Pressed, this, &ACharacterBase::LightAttack);
+	PlayerInputComponent->BindAction("HeavyAttack", IE_Pressed, this, &ACharacterBase::HeavyAttack);
 }
 
 void ACharacterBase::OnConstruction(const FTransform& Transform)
 {
 	TargetDetector->SetSphereRadius(TargetDetectionRange);
 	GetCharacterMovement()->RotationRate = RotRate;
+
+	LeftPunch->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, FName("LeftPunch"));
+	RightFoot->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, FName("RightFoot"));
 }
 
 // FUNCTIONS
@@ -132,5 +144,27 @@ void ACharacterBase::TargetLock()
 				bUseControllerRotationYaw = true;
 				break;
 			}
+	}
+}
+
+void ACharacterBase::DoLightDamage()
+{
+	TArray<AActor*> Actors;
+	LeftPunch->GetOverlappingActors(Actors);
+	const TSubclassOf<UDamageType> DamageType;
+	if (Actors[0])
+	{
+		UGameplayStatics::ApplyDamage(Actors[0], LightDamage, GetController(), this, DamageType);
+	}
+}
+
+void ACharacterBase::DoHeavyDamage()
+{
+	TArray<AActor*> Actors;
+	RightFoot->GetOverlappingActors(Actors);
+	const TSubclassOf<UDamageType> DamageType;
+	if (Actors[0])
+	{
+		UGameplayStatics::ApplyDamage(Actors[0], LightDamage * 3, GetController(), this, DamageType);
 	}
 }
