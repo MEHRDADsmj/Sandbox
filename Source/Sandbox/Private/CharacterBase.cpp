@@ -2,6 +2,8 @@
 
 
 #include "CharacterBase.h"
+
+#include "HealthComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -32,7 +34,9 @@ ACharacterBase::ACharacterBase() : TargetClass{nullptr}, Target{nullptr}, Camera
 
 	RightFoot = CreateDefaultSubobject<USphereComponent>(TEXT("RightFoot"));
 	RightFoot->SetupAttachment(GetMesh());
-	
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
+
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
@@ -55,9 +59,7 @@ void ACharacterBase::Tick(float DeltaTime)
 		if (Target)
 		{
 			if ((Target->GetActorLocation() - GetActorLocation()).Size() > TargetDetectionRange)
-			{
 				TargetLock();
-			}
 			else
 			{
 				const FVector TargetLocation = Target->GetActorLocation();
@@ -153,9 +155,7 @@ void ACharacterBase::DoLightDamage()
 	LeftPunch->GetOverlappingActors(Actors);
 	const TSubclassOf<UDamageType> DamageType;
 	if (Actors[0])
-	{
 		UGameplayStatics::ApplyDamage(Actors[0], LightDamage, GetController(), this, DamageType);
-	}
 }
 
 void ACharacterBase::DoHeavyDamage()
@@ -163,8 +163,6 @@ void ACharacterBase::DoHeavyDamage()
 	TArray<AActor*> Actors;
 	RightFoot->GetOverlappingActors(Actors);
 	const TSubclassOf<UDamageType> DamageType;
-	if (Actors[0])
-	{
+	if (Actors[0] && Actors[0] != this)
 		UGameplayStatics::ApplyDamage(Actors[0], LightDamage * 3, GetController(), this, DamageType);
-	}
 }

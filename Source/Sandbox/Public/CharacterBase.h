@@ -9,6 +9,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class USphereComponent;
+class UHealthComponent;
 
 UCLASS()
 class SANDBOX_API ACharacterBase : public ACharacter
@@ -46,16 +47,16 @@ public:
 	void TargetLock();
 
 	UFUNCTION(BlueprintImplementableEvent, Category= "Functions")
-    void LightAttack();
+	void LightAttack();
 
 	UFUNCTION(BlueprintImplementableEvent, Category= "Functions")
-    void HeavyAttack();
-	
+	void HeavyAttack();
+
 	UFUNCTION(BlueprintCallable, Category= "Functions")
 	void DoLightDamage();
 
 	UFUNCTION(BlueprintCallable, Category= "Functions")
-    void DoHeavyDamage();
+	void DoHeavyDamage();
 
 	// PROPERTIES
 protected:
@@ -64,13 +65,13 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
 	bool IsAttacking = false;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
 	float TargetDetectionRange = 1000.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
 	float LightDamage = 100.0f;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
 	TSubclassOf<AActor> TargetClass;
 
@@ -79,6 +80,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
 	FRotator RotRate = FRotator{0.0f, 720.0f, 0.0f};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Components")
+	UHealthComponent* HealthComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Components")
 	USpringArmComponent* CameraSpringArm;
