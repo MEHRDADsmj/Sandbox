@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Components/SphereComponent.h"
 #include "CharacterBase.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
+class USphereComponent;
 
 UCLASS()
 class SANDBOX_API ACharacterBase : public ACharacter
@@ -42,21 +42,21 @@ public:
 	UFUNCTION(Category= "Input")
 	void MoveRight(float InVal);
 
-	UFUNCTION(Category= "Input")
+	UFUNCTION(BlueprintCallable, Category= "Input")
 	void TargetLock();
 
 	// PROPERTIES
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
-	float TargetDetectionRange = 1000.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
 	bool IsLocked = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
+	float TargetDetectionRange = 1000.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
 	TSubclassOf<AActor> TargetClass;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category= "Properties")
 	AActor* Target;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")

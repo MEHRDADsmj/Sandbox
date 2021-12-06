@@ -5,6 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/SphereComponent.h"
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
@@ -109,10 +110,10 @@ void ACharacterBase::TargetLock()
 {
 	if (IsLocked)
 	{
-		Target = nullptr;
 		IsLocked = false;
-		GetCharacterMovement()->bOrientRotationToMovement = true;
+		Target = nullptr;
 		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
 		return;
 	}
 
@@ -124,6 +125,7 @@ void ACharacterBase::TargetLock()
 		for (uint8 Index = 0; Index < ActorsInRange.Num(); Index++)
 			if (ActorsInRange[Index] != this && ActorsInRange[Index]->ActorHasTag(FName("PossibleTarget")))
 			{
+				//TODO: When the Sphere components of two base characters collide, the rotation of the player would change and that's a bug
 				Target = ActorsInRange[Index];
 				IsLocked = true;
 				GetCharacterMovement()->bOrientRotationToMovement = false;
