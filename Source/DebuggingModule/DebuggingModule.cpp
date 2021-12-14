@@ -3,7 +3,7 @@
 #include "GameplayDebugger.h"
 #include "GameplayDebuggerCategory_Generic.h"
 
-// CTOR/DTOR & VIRTUAL FCUNTIONS
+// CTOR/DTOR & VIRTUAL FUNCTIONS
 
 #define LOCTEXT_NAMESPACE "FDebuggingModule"
 
