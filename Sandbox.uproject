@@ -14,7 +14,7 @@
 		},
 		{
 			"Name": "DebuggingModule",
-			"Type": "Default",
+			"Type": "Editor",
 			"LoadingPhase": "Default"
 		}
 	]
